@@ -84,5 +84,48 @@
         }
         
     }
+
+    .controls {
+        display: grid;
+        grid-template-columns: auto 250px 145px;
+        grid-column-gap: 25px;
+        margin: 30px auto 0;
+        padding: 0 15px;
+
+        .counter {
+            text-decoration: underline;
+            text-decoration-color: $mainColorLight;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-evenly;
+            box-shadow: $shadow;
+            border-radius: $mainRadius;
+            overflow: hidden;
+
+            button {
+                width: 100%;
+                border-radius: 0;
+                padding: 0 15px;
+                box-shadow: none;
+                height: 25px;
+                border-right: 1px solid $mainColorLight;
+
+                &:last-child {
+                    border-right: 0;
+                }
+
+                &:active {
+                    transform: scale(1);
+                }
+
+                &.active {
+                    background-color: $mainColorLight;
+                }
+            }
+        }
+    }
 }
+
 
