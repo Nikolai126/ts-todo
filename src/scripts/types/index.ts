@@ -9,6 +9,10 @@ export interface IActions {
     onInput: (value: string) => void; // arrow function
     onSubmit: () => void;
     onChange: (id:number, text: string) => void;
+    onDelete: (id: number) => void;
+    onCheck: (id: number) => void;
+    onAllCompleted: () => void;
+    onFilters: (value: Filters) => void;
 }
 
 export interface IListener {

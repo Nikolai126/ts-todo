@@ -16,9 +16,12 @@ export default class TodoListController {
             _todoListView.init({
                 onInput: this.actionInput.bind(this),
                 onSubmit: this.actionAdd.bind(this),
-                onChange: this.actionChange.bind(this)
+                onChange: this.actionChange.bind(this),
+                onDelete: this.actionRemove.bind(this),
+                onCheck: this.actionToggle.bind(this),
+                onAllCompleted: this.actionAllRemove.bind(this),
+                onFilters: this.actionFilters.bind(this)
             });
-           
         }
 
         init(): void  {
@@ -27,23 +30,18 @@ export default class TodoListController {
 
         actionInput(value:string):void {
             this._todoListModel.currentInputValue = value;
-
-            console.log(value);
-            
+            console.log('value is:', value);
         }
 
         actionAdd(): void {
             const text = this._todoListModel.currentInputValue.trim();
-
             if(text){
                 this._todoListModel.create(text);
                 this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
             }
-            // console.log( this._todoListModel.taskList)
         }
 
         actionChange(id: number, text:string): void {
-
             this._todoListModel.taskList = this._todoListModel.taskList.map(todo => {
                 if(todo.id === id){
                     return {
@@ -54,25 +52,30 @@ export default class TodoListController {
                     return todo
                 }
             })
-
             this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue)
-            
-            //1 - model.update()
-            //2 - view.render();
-            //
-
         }
 
-
-        actionToggle(): void {
-            //1 - model.update()
-            //2 - view.render();
-            //
+        actionToggle(id: number): void {
+            const index = this._todoListModel.taskList.findIndex( (todo) => {return todo.id === id});
+            this._todoListModel.taskList[index].checked = !this._todoListModel.taskList[index].checked;
+            this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
         }
-    
 
-        actionRemove(): void {
-            //1 - mode;.delete();
-            //2 - view.render() ;
+        actionRemove(id: number): void {            
+            const todo = this._todoListModel.taskList.findIndex( (todo) => {
+                return todo.id === id
+            });
+            this._todoListModel.taskList.splice(todo, 1);
+            this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
+        }
+
+        actionAllRemove(checked: boolean): void {
+            this._todoListModel.taskList = this._todoListModel.taskList.filter( (todo) => {if (todo.checked === false) return true});
+            this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
+        }
+
+        actionFilters(value: Filters) {
+            this.currentFilterValue = value;
+            this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
         }
 }

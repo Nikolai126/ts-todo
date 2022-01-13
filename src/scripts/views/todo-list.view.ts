@@ -1,10 +1,16 @@
+import TodoListController from "../controllers/todo-list.controller";
+import TodoListModel from "../models/todo-list.model";
 import { IActions, ITodoItem, IListener, KeyboardKeys, Filters } from "../types";
 
 export default class TodoListView {
   handlers = {
     onInput: (value: string) => console.log('Input'),
     onSubmit: () => console.log('Submit'),
-    onChange: (id:number , text: string) => console.log('Change')
+    onChange: (id:number , text: string) => console.log('Change'),
+    onDelete: (id:number) => console.log('Delete'),
+    onCheck: (id:number) => console.log('Check'),
+    onAllCompleted: () => console.log('Completed all'),
+    onFilters: (value: Filters) => console.log('Turn filter', value),
   };
 
   private static _createContainer(): HTMLElement {
@@ -56,8 +62,16 @@ export default class TodoListView {
     this._clearApp();
     const header = TodoListView._createHeader();
 
-    const main = this._createMain(todos);
+    let taskListFilter: ITodoItem[];
+    if (filters === Filters.ALL) {
+      taskListFilter = [...todos];
+    } else if (filters === Filters.ACTIVE) {
+      taskListFilter = todos.filter((todo) => !todo.checked);
+    } else if (filters === Filters.COMPLETED) {
+      taskListFilter = todos.filter((todo) => todo.checked);
+    }
 
+    const main = this._createMain(taskListFilter, filters);
 
     this._rootElement.appendChild(header);
     this._rootElement.appendChild(main);
@@ -69,6 +83,10 @@ export default class TodoListView {
     this.handlers.onInput = actions.onInput;
     this.handlers.onSubmit = actions.onSubmit;
     this.handlers.onChange = actions.onChange;
+    this.handlers.onDelete = actions.onDelete;
+    this.handlers.onCheck = actions.onCheck;
+    this.handlers.onAllCompleted = actions.onAllCompleted;
+    this.handlers.onFilters = actions.onFilters;
   }
 
 
@@ -120,8 +138,7 @@ export default class TodoListView {
     
     const input =  document.createElement('input');
     input.setAttribute('type', 'checkbox');
-    input.checked = todo.checked;
-    
+    input.checked = todo.checked;    
 
     const spanCheckMark = document.createElement('span');
     spanCheckMark.classList.add('checkmark');
@@ -129,6 +146,13 @@ export default class TodoListView {
     const spanContent = document.createElement('span');
     spanContent.classList.add('content');
     spanContent.insertAdjacentText('afterbegin', todo.text) // add a task
+    if (todo.checked) {
+      spanContent.setAttribute('style', 'text-decoration: line-through')
+    }
+
+    input.addEventListener('click', (e) => {
+      this.handlers.onCheck(todo.id);
+    })
 
     label.appendChild(input);
     label.appendChild(spanCheckMark);
@@ -153,10 +177,19 @@ export default class TodoListView {
      }]
      )
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.setAttribute('type', 'button');
-    deleteBtn.insertAdjacentText('afterbegin', '✗');
-    deleteBtn.classList.add('delete');
+    const deleteBtn = TodoListView._createButton(
+      '✗',
+     ['delete'],
+     [{
+       eventName: 'click',
+       callback: () => {
+         if (todo) {
+           this.handlers.onDelete(todo.id);
+         }
+       }
+     }]
+     )
+
 
 
     div.appendChild(btnEdit);
@@ -178,7 +211,6 @@ export default class TodoListView {
 
     const input = document.createElement('input');
     input.addEventListener('input', (e) =>{
-      // console.log((<HTMLInputElement>e.target).value)
       this.handlers.onInput((<HTMLInputElement>e.target).value);
     });
     input.addEventListener('keydown', (e) => {
@@ -190,7 +222,6 @@ export default class TodoListView {
     input.setAttribute('placeholder', 'new todo...');
     input.setAttribute('autocomplete', 'off');
 
-    // const button = document.createElement('button');
     const btnAdd = TodoListView._createButton(
       'Add',
       ['add-btn'],
@@ -205,10 +236,7 @@ export default class TodoListView {
     section.appendChild(input);
     section.appendChild(btnAdd);
     return section
-
   }
-
- 
 
   private _createTodoListSection(todos: ITodoItem[]): HTMLElement {
     const section = TodoListView._createSection('todos');
@@ -222,12 +250,10 @@ export default class TodoListView {
 
     section.appendChild(ul);
 
-
     return section
   }
 
-
-  private _createMain(todos: ITodoItem[]): HTMLElement {
+  private _createMain(todos: ITodoItem[], filter: Filters): HTMLElement {
     const main = document.createElement('main');
     main.classList.add('main');
 
@@ -238,14 +264,72 @@ export default class TodoListView {
     
     const secControls = TodoListView._createSection('controls');
 
-
     container.appendChild(inputSection);
     container.appendChild(todoListSection);
 
-    //third section with btns
-    // container.appendChild(secControls);
+    const todosCounter = todos.length;    
+    const counter = document.createElement('span');
+    counter.classList.add('counter');
+    counter.insertAdjacentText('afterbegin', `${todosCounter} items left`);
 
+    const filters = document.createElement('div');
+    filters.classList.add('filters');
 
+    const buttonAll = TodoListView._createButton(
+      "All",
+      [filter === Filters.ALL ? 'active' : 'not'],
+      [
+        {
+          eventName: 'click',
+          callback: () => {
+            this.handlers.onFilters(Filters.ALL);
+          },
+        },
+      ]
+    );
+
+    const buttonActive = TodoListView._createButton(
+      "Active",
+      [filter === Filters.ACTIVE ? 'active' : 'not'],
+      [
+        {
+          eventName: 'click',
+          callback: () => {
+            this.handlers.onFilters(Filters.ACTIVE);
+          },
+        },
+      ]
+    );
+
+    const buttonCompleted = TodoListView._createButton(
+      "Completed",
+      [filter === Filters.COMPLETED ? 'active' : 'not'],
+      [
+        {
+          eventName: 'click',
+          callback: () => {
+            this.handlers.onFilters(Filters.COMPLETED);
+          },
+        },
+      ]
+    );
+
+    filters.appendChild(buttonAll);
+    filters.appendChild(buttonActive);
+    filters.appendChild(buttonCompleted);
+
+    const completedAll = document.createElement('button');
+    completedAll.setAttribute('type', 'button');
+    completedAll.insertAdjacentText('afterbegin', 'Completed all');
+    completedAll.addEventListener('click', (e) => {
+      this.handlers.onAllCompleted();
+    });
+
+    secControls.appendChild(counter);
+    secControls.appendChild(filters);
+    secControls.appendChild(completedAll);
+
+    container.appendChild(secControls);
 
     main.appendChild(container);
     return main;
