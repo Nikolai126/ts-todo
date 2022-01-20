@@ -31,43 +31,27 @@ export default class TodoListController {
     if (text) {
       this._todoListModel.create(text);
       this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
+      this._todoListModel.currentInputValue = '';
     }
   }
 
   actionChange(id: number, text: string): void {
-    this._todoListModel.taskList = this._todoListModel.taskList.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          text
-        };
-      } else {
-        return todo;
-      }
-    });
+    this._todoListModel.textChange(id, text);
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
   actionToggle(id: number): void {
-    const index = this._todoListModel.taskList.findIndex((todo) => {
-      return todo.id === id;
-    });
-    this._todoListModel.taskList[index].checked = !this._todoListModel.taskList[index].checked;
+    this._todoListModel.toggle(id);
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
   actionRemove(id: number): void {
-    const todo = this._todoListModel.taskList.findIndex((todo) => {
-      return todo.id === id;
-    });
-    this._todoListModel.taskList.splice(todo, 1);
+    this._todoListModel.remove(id);
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
   actionAllRemove(): void {
-    this._todoListModel.taskList = this._todoListModel.taskList.filter((todo) => {
-      if (todo.checked === false) return true;
-    });
+    this._todoListModel.removeAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 

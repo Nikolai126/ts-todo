@@ -265,7 +265,14 @@ export default class TodoListView {
     container.appendChild(inputSection);
     container.appendChild(todoListSection);
 
-    const todosCounter = todos.length;
+    const todosUnChecked = todos.filter((todo) => {
+      if(todo.checked === false) return true;
+    })
+    console.log('todosUnChecked: ', todosUnChecked);
+    
+    const todosCounter = (filter === Filters.ALL) ? todosUnChecked.length : todos.length;
+    console.log('todosCounter:', todosCounter);
+    
     const counter = document.createElement('span');
     counter.classList.add('counter');
     counter.insertAdjacentText('afterbegin', `${todosCounter} items left`);
