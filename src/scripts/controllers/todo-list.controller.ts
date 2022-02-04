@@ -32,6 +32,7 @@ export default class TodoListController {
       await this._todoListModel.create(text);
       await this._todoListModel.getAll();
       this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
+      this._todoListModel.currentInputValue = '';
     } else {
       return;
     }
