@@ -17,41 +17,47 @@ export default class TodoListController {
     });
   }
 
-  init(): void {
+  async init(): Promise<void> {
+    await this._todoListModel.getAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
   actionInput(value: string): void {
     this._todoListModel.currentInputValue = value;
-    console.log('value is:', value);
   }
 
-  actionAdd(): void {
+  async actionAdd(): Promise<void> {
     const text = this._todoListModel.currentInputValue.trim();
     if (text) {
-      this._todoListModel.create(text);
+      await this._todoListModel.create(text);
+      await this._todoListModel.getAll();
       this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
-      this._todoListModel.currentInputValue = '';
+    } else {
+      return;
     }
   }
 
-  actionChange(id: number, text: string): void {
-    this._todoListModel.textChange(id, text);
+  async actionChange(id: number, text: string): Promise<void> {
+    await this._todoListModel.textChange(id, text);
+    await this._todoListModel.getAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
-  actionToggle(id: number): void {
-    this._todoListModel.toggle(id);
+  async actionToggle(id: number): Promise<void> {
+    await this._todoListModel.toggle(id);
+    await this._todoListModel.getAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
-  actionRemove(id: number): void {
-    this._todoListModel.remove(id);
+  async actionRemove(id: number): Promise<void> {
+    await this._todoListModel.remove(id);
+    await this._todoListModel.getAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 
-  actionAllRemove(): void {
-    this._todoListModel.removeAll();
+  async actionAllRemove(): Promise<void> {
+    await this._todoListModel.removeAll();
+    await this._todoListModel.getAll();
     this._todoListView.render(this._todoListModel.taskList, this.currentFilterValue);
   }
 

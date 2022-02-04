@@ -29,3 +29,7 @@ export enum Filters {
   COMPLETED = 'completed',
   ACTIVE = 'active'
 }
+
+export enum Uri {
+  LINK = 'http://localhost:8000/api/v1/'
+}

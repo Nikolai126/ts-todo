@@ -1,50 +1,59 @@
-import { ITodoItem } from '../types';
+import { ITodoItem, Uri } from '../types';
 
 export default class TodoListModel {
   currentInputValue = '';
 
   taskList: ITodoItem[] = [];
 
-  create(text: string) {
-    const todo: ITodoItem = {
-      id: Math.floor(Math.random() * 100000),
-      text,
-      checked: false
-    };
-
-    this.taskList.push(todo);
-  }
-
-  textChange(id: number, text: string) {
-    this.taskList = this.taskList.map((todo) => {
-      if (todo.id === id) {
-        return {
-          ...todo,
-          text
-        };
-      } else {
-        return todo;
-      }
+  async create(text: string) {
+    await fetch(Uri.LINK, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: text })
     });
   }
 
-  toggle(id: number) {
-    const index = this.taskList.findIndex((todo) => {
-      return todo.id === id;
+  async textChange(id: number, text: string) {
+    await fetch(Uri.LINK + `${id.toString()}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: text })
     });
-    this.taskList[index].checked = !this.taskList[index].checked;
   }
 
-  remove(id: number) {
-    const todo = this.taskList.findIndex((todo) => {
-      return todo.id === id;
+  async toggle(id: number) {
+    const todo = this.taskList.find((todo) => todo.id === id);
+    await fetch(Uri.LINK + `${id.toString()}`, {
+      method: 'PUT',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ checked: !todo.checked })
     });
-    this.taskList.splice(todo, 1);
   }
 
-  removeAll() {
-    this.taskList = this.taskList.filter((todo) => {
-      if (todo.checked === false) return true;
+  async remove(id: number) {
+    await fetch(Uri.LINK + `${id.toString()}`, {
+      method: 'DELETE'
     });
+  }
+
+  async removeAll() {
+    await fetch(Uri.LINK + '0', {
+      method: 'DELETE'
+    });
+  }
+
+  async getAll() {
+    const res = await fetch(Uri.LINK);
+    const data = await res.json();
+    this.taskList = [...data];
   }
 }

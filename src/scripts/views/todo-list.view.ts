@@ -1,4 +1,5 @@
 import { IActions, ITodoItem, IListener, KeyboardKeys, Filters } from '../types';
+import { neon } from './neon';
 
 export default class TodoListView {
   handlers = {
@@ -23,11 +24,11 @@ export default class TodoListView {
 
     const container = TodoListView._createContainer();
 
-    const h1 = document.createElement('h1');
-    h1.classList.add('app-title');
-    h1.insertAdjacentText('afterbegin', 'ToDoList');
+    const divBlog = document.createElement('div');
+    divBlog.classList.add('title');
+    divBlog.insertAdjacentText('afterbegin', 'ToDo');
 
-    container.appendChild(h1);
+    container.appendChild(divBlog);
     header.appendChild(container);
 
     return header;
@@ -56,7 +57,6 @@ export default class TodoListView {
     return button;
   }
 
-  //---
   constructor(private readonly _rootElement: HTMLElement) {}
 
   render(todos: ITodoItem[], filters = Filters.ALL): void {
@@ -76,6 +76,8 @@ export default class TodoListView {
 
     this._rootElement.appendChild(header);
     this._rootElement.appendChild(main);
+
+    neon();
   }
 
   init(actions: IActions): void {
@@ -215,7 +217,7 @@ export default class TodoListView {
       }
     });
     input.setAttribute('type', 'text');
-    input.setAttribute('placeholder', 'new todo...');
+    input.setAttribute('placeholder', 'New todo...');
     input.setAttribute('autocomplete', 'off');
 
     const btnAdd = TodoListView._createButton(

@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx webpack",
     "start": "npx webpack serve --mode development --open",
-    "eslint": "eslint --fix . --ext .js,.ts"
+    "eslint": "eslint --fix . --ext .js,.ts",
+    "server": "nodemon ./src/scripts/TodoServer/index.js",
+    "database": "node ./src/scripts/TodoServer/createDataBase.js",
+    "createTable": "node ./src/scripts/TodoServer/createTable.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +23,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "html-webpack-plugin": "^5.5.0",
+    "nodemon": "^2.0.15",
     "sass": "^1.46.0",
     "sass-loader": "^12.4.0",
     "style-loader": "^3.3.1",
@@ -30,6 +34,10 @@
     "webpack-dev-server": "^4.7.2"
   },
   "dependencies": {
-    "eslint-config-airbnb": "^19.0.4"
+    "babel-loader": "^8.2.3",
+    "cors": "^2.8.5",
+    "eslint-config-airbnb": "^19.0.4",
+    "express": "^4.17.2",
+    "pg": "^8.7.1"
   }
 }

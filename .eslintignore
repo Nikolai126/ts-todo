@@ -3,3 +3,5 @@ dist
 webpack.config.js
 .eslintrc.js
 .vscode
+src/scripts/TodoServer
+src/scripts/views/neon.ts

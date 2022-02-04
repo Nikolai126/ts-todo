@@ -1,12 +1,62 @@
 @import './variables';
 
-.header {
-    background-color: $mainColorLight;
-    height: $headerHeight;
+// .header {
+//     background-color: $mainColorLight;
+//     height: $headerHeight;
     
-    .app-title {
-        margin: 0;
-        text-align: center;
-        line-height: $headerHeight;
-    }
+//     .app-title {
+//         margin: 0;
+//         text-align: center;
+//         line-height: $headerHeight;
+//     }
+// }
+
+@import url('https://fonts.googleapis.com/css?family=Nixie+One');
+
+html, body {
+  margin: 0;
+	height: 100%;
+	width: 100%;
+	display: table;
 }
+
+html {
+	background-repeat: repeat;
+	background-position: center center;
+}
+
+body {
+    background: -moz-radial-gradient(center, ellipse cover, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0.73) 100%);
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.04)), color-stop(100%,rgba(0,0,0,0.73)));
+    background: -webkit-radial-gradient(center, ellipse cover, rgba(0,0,0,0.04) 0%,rgba(0,0,0,0.73) 100%);
+    background: -o-radial-gradient(center, ellipse cover, rgba(0,0,0,0.04) 0%,rgba(0,0,0,0.73) 100%);
+    background: -ms-radial-gradient(center, ellipse cover, rgba(0,0,0,0.04) 0%,rgba(0,0,0,0.73) 100%);
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.04) 0%,rgba(0,0,0,0.73) 100%);	
+}
+
+.title {
+	text-align: center;
+	vertical-align: middle;
+    height: $headerHeight;
+	margin-top: 30px;
+}
+
+i {
+  font: normal 100px/ 100px 'Nixie One', Helvetica, Arial;
+	color: #EEDDE0;
+	text-shadow: 0 0 30px #EC637B, 
+		0 0 10px rgba(230, 161, 173, 0.41), 
+		0 0 100px #E6A1AD, 
+		0 0 500px #F36780, 
+		5px 9px 5px rgba(0, 0, 0, 0.5);
+}
+
+i.off {
+	color: rgba(46, 46, 46, 0.61);
+	text-shadow: 7px 7px 5px rgba(0, 0, 0, 0.5);
+}
+
+html {
+	background-image: $mainColorBlack;
+}
+

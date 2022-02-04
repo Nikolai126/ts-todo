@@ -1,6 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
-
 const srcDir = path.join(__dirname, 'src');
 
 module.exports = {
@@ -13,6 +12,11 @@ module.exports = {
                 exclude: /node_modules/,
             },
             {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: { loader: 'babel-loader' },
+            },
+            {
                 test: /\.s[ac]ss$/i,
                 use: [
                     // Creates `style` nodes from JS strings
@@ -23,6 +27,7 @@ module.exports = {
                     "sass-loader",
                 ],
             },
+            
         ],
     },
     resolve: {
